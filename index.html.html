@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be My Valentine 💖</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:'Poppins', sans-serif;
+}
+
+body{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#000;
+  overflow:hidden;
+}
+
+/* Animated Water Gradient */
+.gradient-bg{
+  position:absolute;
+  inset:-50%;
+  background: linear-gradient(60deg,#ff6b9d,#ff1f4d,#8e2de2,#4a00e0,#ff6b9d);
+  background-size:500% 500%;
+  animation: water 18s ease infinite;
+  filter: blur(100px);
+}
+
+@keyframes water{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+/* Floating Hearts */
+.heart{
+  position:absolute;
+  width:18px;
+  height:18px;
+  background:rgba(255,255,255,0.6);
+  transform:rotate(45deg);
+  animation: float 12s linear infinite;
+}
+
+.heart::before,
+.heart::after{
+  content:"";
+  position:absolute;
+  width:18px;
+  height:18px;
+  background:rgba(255,255,255,0.6);
+  border-radius:50%;
+}
+
+.heart::before{top:-9px;left:0}
+.heart::after{left:9px;top:0}
+
+@keyframes float{
+  0%{transform:translateY(100vh) rotate(45deg);opacity:0}
+  10%{opacity:1}
+  100%{transform:translateY(-120vh) rotate(45deg);opacity:0}
+}
+
+/* Card */
+.card{
+  position:relative;
+  background:rgba(255,255,255,0.18);
+  backdrop-filter:blur(20px);
+  padding:40px;
+  border-radius:25px;
+  text-align:center;
+  color:white;
+  max-width:360px;
+  width:90%;
+  box-shadow:0 0 40px rgba(0,0,0,0.5);
+  z-index:2;
+  animation: pop 0.8s ease;
+}
+
+@keyframes pop{
+  from{transform:scale(0.8);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+
+h1{
+  font-size:26px;
+  margin-bottom:20px;
+}
+
+.photo{
+  width:220px;
+  height:220px;
+  border-radius:20px;
+  object-fit:cover;
+  margin:20px auto;
+  border:4px solid rgba(255,255,255,0.7);
+}
+
+.buttons{
+  margin-top:30px;
+  display:flex;
+  justify-content:space-around;
+  gap:20px;
+}
+
+button{
+  padding:12px 32px;
+  border:none;
+  border-radius:30px;
+  font-size:18px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.yes{
+  background:#ff4d6d;
+  color:white;
+}
+
+.yes:hover{transform:scale(1.1)}
+
+.no{
+  background:#444;
+  color:white;
+}
+
+.message{
+  margin-top:25px;
+  font-size:20px;
+  font-weight:600;
+  min-height:28px;
+}
+
+/* Confetti */
+.confetti{
+  position:fixed;
+  width:10px;
+  height:10px;
+  background:red;
+  animation: fall 3s linear forwards;
+}
+
+@keyframes fall{
+  0%{transform:translateY(-10px) rotate(0deg);opacity:1}
+  100%{transform:translateY(100vh) rotate(360deg);opacity:0}
+}
+</style>
+</head>
+<body>
+
+<!-- Music (starts after first interaction) -->
+<audio id="bgMusic" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<div class="gradient-bg"></div>
+
+<div class="card">
+  <h1>Acceptes-tu d'être ma Valentine ? 💖</h1>
+
+  <img src="image.jpg" alt="Valentine" class="photo">
+
+  <div class="buttons">
+    <button class="yes" onclick="yesClick()">OUI</button>
+    <button class="no" id="noBtn">NON</button>
+  </div>
+
+  <div class="message" id="message"></div>
+</div>
+
+<script>
+/* Floating hearts generation */
+for(let i=0;i<15;i++){
+  const h=document.createElement('div');
+  h.className='heart';
+  h.style.left=Math.random()*100+'vw';
+  h.style.animationDuration=(Math.random()*6+8)+'s';
+  document.body.appendChild(h);
+}
+
+const music=document.getElementById('bgMusic');
+let musicStarted=false;
+
+function startMusic(){
+  if(!musicStarted){
+    music.play().catch(()=>{});
+    musicStarted=true;
+  }
+}
+
+document.body.addEventListener('click',startMusic,{once:true});
+
+// YES CLICK
+function yesClick(){
+  startMusic();
+  typeWriter("Nous donnerons la suite du programme dans les jours à venir ❤️✨");
+  launchConfetti();
+}
+
+// Typewriter effect
+function typeWriter(text){
+  const el=document.getElementById('message');
+  el.innerHTML="";
+  let i=0;
+  const timer=setInterval(()=>{
+    if(i<text.length){
+      el.innerHTML+=text.charAt(i);
+      i++;
+    } else clearInterval(timer);
+  },50);
+}
+
+// CONFETTI
+function launchConfetti(){
+  for(let i=0;i<90;i++){
+    let c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=`hsl(${Math.random()*360},100%,50%)`;
+    c.style.animationDuration=(Math.random()*2+2)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+
+// EVADING NO BUTTON (desktop + mobile)
+const noBtn=document.getElementById('noBtn');
+function evade(){
+  const x=Math.random()*(window.innerWidth-120);
+  const y=Math.random()*(window.innerHeight-120);
+  noBtn.style.position='fixed';
+  noBtn.style.left=x+'px';
+  noBtn.style.top=y+'px';
+  noBtn.style.transform='scale(0.7)';
+}
+
+noBtn.addEventListener('mouseover',evade);
+noBtn.addEventListener('touchstart',evade);
+</script>
+
+</body>
+</html>
